@@ -5,10 +5,13 @@
     <title>てすと</title>
   </head>
   <body>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/2.0.2/sha512.js" charset="utf-8"></script>
-    <script src="./main.js" charset="utf-8"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/2.0.2/sha.js" charset="utf-8"></script>
+    <script src="./PSGenerator.js" charset="utf-8"></script>
     <script type="text/javascript">
       var psg = new PSGenerator();
+      var charTypes = ['abcdefghijklmnopqrstuvwxyz', '0123456789', '+-*/'];
+      var pass = psg.generate('amazon', 'tekitouna moziretsu', 8, charTypes);
+      console.log(pass);
     </script>
   </body>
 </html>
