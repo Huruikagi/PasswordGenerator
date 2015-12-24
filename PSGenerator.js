@@ -1,7 +1,7 @@
 /**
  * @fileoverview {@code PSGenerator}クラスとそのメソッドの定義。
  * メソッドの一部に{@link https://caligatio.github.io/jsSHA/ jsSHA}を使用しています。
- * @author kbc14a04@stu.kawahara.ac.jp (Tsuyoshi Kita)
+ * @author Huruikagi
  */
 
 
