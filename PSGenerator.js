@@ -11,11 +11,8 @@
  * ライブラリが事前に読み込まれていなければエラーが発生します。
  * @constructor
  */
-PSGenerator = function() {
-  this.carsor_;
-  this.hash_;
-  this.passphrase_;
-  this.shaObj_ = new jsSHA('SHA-512', 'TEXT');
+PSGenerator = function () {
+    this.shaObj_ = new jsSHA('SHA-512', 'TEXT');
 };
 
 
@@ -28,51 +25,72 @@ PSGenerator = function() {
  *     （例：{@code {"012...", "abc...", "ABC..."}}）
  * @return {string} 生成されたパスワード文字列
  */
-PSGenerator.prototype.generate = function(keyword, passphrase, length, charTypes) {
+PSGenerator.prototype.generate = function (keyword, passphrase, length, charTypes) {
 
-  //プライベートプロパティのリセット
-  this.carsor_ = 0;
-  this.hash_ = this.hashing_(keyword + passphrase);
-  this.passphrase_ = passphrase;
+    /**
+     * パスワードの生成に利用するハッシュ文字列
+     * @type {string}
+     * @private
+     */
+    this.hash_ = this.hashing_(keyword + passphrase);
 
-  //確定した文字を格納していく配列
-  var resultAry = new Array();
+    /**
+     * ハッシュ文字列をどこまで利用したか
+     * @type {number}
+     * @private
+     */
+    this.carsor_ = 0;
 
-  //resAryの中で、まだ文字が格納されていないindexを保持する配列
-  var empty = new Array();
-  for (var i = 0; i < length; i++) {
-    empty[i] = i;
-  }
+    /**
+     * ハッシュ化に利用するパスフレーズ
+     * @type {string}
+     * @private
+     */
+    this.passphrase_ = passphrase;
 
-  //後で使うのでループのついでにcharTypesに格納されている文字を全部連結していく
-  var allChars = '';
+    var i, idx, target;
 
-  //選択された各文字郡から最低1文字ずつ使うためのループ
-  for (var i = 0; i < charTypes.length; i++) {
-    var idx = this.hashRandom_(empty.length);
-    var target = empty[idx];
-    empty.splice(idx, 1);
-    //パスワード文字列のtarget番目にこのカテゴリから1文字入れる
-    resultAry[target] = charTypes[i].charAt(this.hashRandom_(charTypes[i].length));
+    //確定した文字を格納していく配列
+    var resultAry = [];
 
-    allChars += charTypes[i];
-  }
+    //resAryの中で、まだ文字が格納されていないindexを保持する配列
+    var empty = [];
+    for (i = 0; i < length; i++) {
+        empty[i] = i;
+    }
+
+    //後で使うのでループのついでにcharTypesに格納されている文字を全部連結していく
+    var allChars = '';
+
+    //選択された各文字郡から最低1文字ずつ使うためのループ
+    for (i = 0; i < charTypes.length; i++) {
+        idx = this.hashRandom_(empty.length);
+        target = empty[idx];
+        empty.splice(idx, 1);
+        //パスワード文字列のtarget番目にこのカテゴリから1文字入れる
+        resultAry[target] = charTypes[i].charAt(this.hashRandom_(charTypes[i].length));
+
+        allChars += charTypes[i];
+    }
 
 
-  //残りを適当にランダムに埋めるためのループ
-  while (empty.length > 0) {
-    var idx = this.hashRandom_(empty.length);
-    var target = empty[idx];
-    empty.splice(idx, 1);
-    resultAry[target] = allChars.charAt(this.hashRandom_(allChars.length));
-  }
+    //残りを適当にランダムに埋めるためのループ
+    while (empty.length > 0) {
+        idx = this.hashRandom_(empty.length);
+        target = empty[idx];
+        empty.splice(idx, 1);
+        resultAry[target] = allChars.charAt(this.hashRandom_(allChars.length));
+    }
 
-  //結果を配列から文字列に変換する
-  var resultStr = '';
-  for (var i = 0; i < resultAry.length; i++) {
-    resultStr += resultAry[i];
-  }
-  return resultStr;
+    //結果を配列から文字列に変換する
+    var resultStr = '';
+    for (i = 0; i < resultAry.length; i++) {
+        resultStr += resultAry[i];
+    }
+
+    this.passphrase_ = null;
+
+    return resultStr;
 };
 
 
@@ -82,9 +100,9 @@ PSGenerator.prototype.generate = function(keyword, passphrase, length, charTypes
  * @return {string} ハッシュ化後の文字列（16進数表記の整数を文字列化したもの）
  * @private
  */
-PSGenerator.prototype.hashing_ = function(str) {
-  this.shaObj_.update(str);
-  return this.shaObj_.getHash('HEX');
+PSGenerator.prototype.hashing_ = function (str) {
+    this.shaObj_.update(str);
+    return this.shaObj_.getHash('HEX');
 };
 
 
@@ -95,18 +113,18 @@ PSGenerator.prototype.hashing_ = function(str) {
  * @return {number} 0以上size未満の整数
  * @private
  */
-PSGenerator.prototype.hashRandom_ = function(size) {
+PSGenerator.prototype.hashRandom_ = function (size) {
 
-  if (this.carsor_ >= this.hash_.length - 8) {
-    //現在のhash_を末尾まで使い切ったらもう一回ハッシュ関数にかける
-    this.hash_ = this.hashing_(this.hash_ + this.passphrase_);
-    this.carsor_ = 0;
-  }
+    if (this.carsor_ >= this.hash_.length - 8) {
+        //現在のhash_を末尾まで使い切ったらもう一回ハッシュ関数にかける
+        this.hash_ = this.hashing_(this.hash_ + this.passphrase_);
+        this.carsor_ = 0;
+    }
 
-  //ハッシュ文字列から8文字分取り出す
-  var sphash = this.hash_.slice(this.carsor_, this.carsor_+ 7);
-  this.carsor_ += 8;
+    //ハッシュ文字列から8文字分取り出す
+    var sphash = this.hash_.slice(this.carsor_, this.carsor_ + 7);
+    this.carsor_ += 8;
 
-  //取り出した文字列を整数に変換し、sizeの剰余により求める数値を得る
-  return parseInt(sphash, 16) % size;
+    //取り出した文字列を整数に変換し、sizeの剰余により求める数値を得る
+    return parseInt(sphash, 16) % size;
 };
