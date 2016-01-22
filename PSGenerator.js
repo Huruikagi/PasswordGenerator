@@ -6,7 +6,7 @@
 
 
 /**
- * {@link https://caligatio.github.io/jsSHA/ jsSHA}のSHA512アルゴリズムに移譲するため、
+ * {@link https://caligatio.github.io/jsSHA/ jsSHA}のSHA512を利用するため、
  * ライブラリが事前に読み込まれていなければエラーが発生します。
  * @classdesc 一連のパスワード生成処理を担当するクラスです。
  * @class
