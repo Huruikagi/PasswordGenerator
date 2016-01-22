@@ -1,15 +1,15 @@
 /**
- * @fileoverview {@code PSGenerator}クラスとそのメソッドの定義。
+ * @fileoverview PSGeneratorクラスとそのメソッドの定義。
  * メソッドの一部に{@link https://caligatio.github.io/jsSHA/ jsSHA}を使用しています。
  * @author Huruikagi
  */
 
 
 /**
- * 一連のパスワード生成処理を担当するクラスです。
  * {@link https://caligatio.github.io/jsSHA/ jsSHA}のSHA512アルゴリズムに移譲するため、
  * ライブラリが事前に読み込まれていなければエラーが発生します。
- * @constructor
+ * @classdesc 一連のパスワード生成処理を担当するクラスです。
+ * @class
  */
 PSGenerator = function () {
     this.shaObj_ = new jsSHA('SHA-512', 'TEXT');
@@ -22,7 +22,7 @@ PSGenerator = function () {
  * @param {number} length - パスワードの文字数（自然数であること）
  * @param {string[]} charTypes - パスワードに含まれる可能性のある文字。
  *     カテゴリごとに文字列化されており、それらを配列としてまとめる。
- *     （例：{@code {"012...", "abc...", "ABC..."}}）
+ *     （例：{"012...", "abc...", "ABC..."}）
  * @return {string} 生成されたパスワード文字列
  */
 PSGenerator.prototype.generate = function (keyword, passphrase, length, charTypes) {
